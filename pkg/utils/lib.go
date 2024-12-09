@@ -21,3 +21,9 @@ func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), ROUNDS)
 	return string(bytes), err
 }
+
+// compare pass hash
+func CheckPass(password, hashedPass string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPass), []byte(password))
+	return err == nil
+}

@@ -4,13 +4,15 @@ package models
 import (
 	"apiv2/pkg/db"
 	"apiv2/pkg/utils"
+	"database/sql"
+	"errors"
 	"fmt"
 )
 
 // shape of user
 type User struct {
 	ID        int64  `json:"id"`
-	Name      string `json:"name" binding:"required"`
+	Name      string `json:"name"`
 	Email     string `json:"email" binding:"required"`
 	Password  string `json:"password" binding:"required"`
 	CreatedAt string `json:"time"`
@@ -47,6 +49,28 @@ func (u *User) Save() error {
 
 	// Assign the new ID to the user struct
 	u.ID = id
+
+	return nil
+}
+
+// validate credentials
+func (u User) ValidateCreds() error {
+	const query = `SELECT password FROM USERS WHERE email = ?`
+	var retrievedPass string
+
+	// Query the database for the user's password
+	err := db.DB.QueryRow(query, u.Email).Scan(&retrievedPass)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("email not found")
+		}
+		return fmt.Errorf("database error: %w", err)
+	}
+
+	// Check if the password matches
+	if !utils.CheckPass(u.Password, retrievedPass) {
+		return errors.New("wrong password")
+	}
 
 	return nil
 }

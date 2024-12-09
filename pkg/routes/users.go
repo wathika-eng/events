@@ -9,16 +9,16 @@ import (
 
 // signup users functionality/endpoint
 func CreateUsers(c *gin.Context) {
-	var users models.User
+	var user models.User
 
 	// Parse the incoming JSON body into the users struct
-	if err := c.ShouldBindJSON(&users); err != nil {
+	if err := c.ShouldBindJSON(&user); err != nil {
 		// Return a bad request error with specific message
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	users.ID = 1
+	user.ID = 1
 
 	// // Validate the users data
 	// if err := users.Checkusers(); err != nil {
@@ -27,14 +27,33 @@ func CreateUsers(c *gin.Context) {
 	// }
 
 	// Save the users to the database
-	if err := users.Save(); err != nil {
+	if err := user.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Respond with a success message and the created users details
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "users '" + users.Name + "' created successfully",
-		"users":   users.Email,
+		"message": "user '" + user.Name + "' created successfully",
+		"users":   user.Email,
 	})
+}
+
+// login users
+func Login(c *gin.Context) {
+	var user models.User
+
+	// Parse the incoming JSON body into the users struct
+	if err := c.ShouldBindJSON(&user); err != nil {
+		// Return a bad request error with specific message
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := user.ValidateCreds()
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully"})
 }
