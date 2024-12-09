@@ -55,11 +55,11 @@ func (u *User) Save() error {
 
 // validate credentials
 func (u User) ValidateCreds() error {
-	const query = `SELECT password FROM USERS WHERE email = ?`
+	const query string = `SELECT id, password FROM USERS WHERE email = ?`
 	var retrievedPass string
 
 	// Query the database for the user's password
-	err := db.DB.QueryRow(query, u.Email).Scan(&retrievedPass)
+	err := db.DB.QueryRow(query, u.Email).Scan(&u.ID, &retrievedPass)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("email not found")
