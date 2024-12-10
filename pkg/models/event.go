@@ -15,7 +15,7 @@ type Event struct {
 	Description string `json:"description" binding:"required"`
 	Location    string `json:"location" binding:"required"`
 	Time        string `json:"time"`
-	UserID      int    `json:"userID"`
+	UserID      int64  `json:"userID"`
 }
 
 // Save method to interact with Events in the DB

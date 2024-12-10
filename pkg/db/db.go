@@ -42,7 +42,7 @@ func createTables() error {
 	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	email TEXT NOT NULL unique,
 	name TEXT NOT NULL,
-	createdAt DATETIME NOT NULL,
+	time DATETIME NOT NULL,
 	password TEXT NOT NULL
 	) 
 	`

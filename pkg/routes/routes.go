@@ -1,6 +1,10 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"apiv2/pkg/middlewares"
+
+	"github.com/gin-gonic/gin"
+)
 
 // pointer to our Gin app
 func RegisterRoutes(server *gin.Engine) {
@@ -8,7 +12,7 @@ func RegisterRoutes(server *gin.Engine) {
 	server.GET("/events", GetEvents)
 	// get event by ID
 	server.GET("/events/:id", GetEvent)
-	server.POST("/events", CreateEvents)
+	server.POST("/events", middlewares.Authenticated, CreateEvents)
 	//put to update resource
 	server.PUT("events/:id", UpdateEvent)
 	server.DELETE("events/:id", DeleteEvent)

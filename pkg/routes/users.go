@@ -19,7 +19,7 @@ func CreateUsers(c *gin.Context) {
 		return
 	}
 
-	user.ID = 1
+	// user.ID = 1
 
 	// // Validate the users data
 	// if err := users.Checkusers(); err != nil {

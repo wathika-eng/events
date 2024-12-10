@@ -2,11 +2,10 @@ package routes
 
 import (
 	"apiv2/pkg/models"
-	"apiv2/pkg/utils"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,30 +29,10 @@ func GetEvents(c *gin.Context) {
 // create a new event on the DB
 // only authorized users
 func CreateEvents(c *gin.Context) {
-	tokenHeader := c.GetHeader("Authorization")
-	// Check if the Authorization header is missing
-	if tokenHeader == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
-		return
-	}
-	// Ensure the token follows the "Bearer <token>" format
-	const bearerPrefix = "Bearer "
-	if !strings.HasPrefix(tokenHeader, bearerPrefix) {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token format"})
-		return
-	}
-
-	// Extract the actual token by removing the "Bearer " prefix
-	token := strings.TrimPrefix(tokenHeader, bearerPrefix)
-
-	// Verify the token
-	if err := utils.VerifyToken(token); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-
+	// extract data from middleware
+	userID := c.GetInt64("userID")
+	fmt.Println(userID)
 	// Proceed if token is valid
-
 	// continue since token is valid
 	var event models.Event
 
@@ -65,8 +44,8 @@ func CreateEvents(c *gin.Context) {
 	}
 
 	// Pre-allocate event fields if required (consider user authentication for dynamic fields)
-	event.UserID = 1 // This should ideally come from authenticated user
-	event.Id = 1     // Assuming ID is generated or set elsewhere (like DB)
+	event.UserID = int64(userID) // This should ideally come from authenticated user
+	event.Id = 1                 // Assuming ID is generated or set elsewhere (like DB)
 
 	// // Validate the event data
 	// if err := event.CheckEvent(); err != nil {

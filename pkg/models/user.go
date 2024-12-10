@@ -31,7 +31,7 @@ func (u *User) Save() error {
 
 	// Define the query to insert the user (prevents SQL injection)
 	query := `
-		INSERT INTO users (name, email, password, createdAt)
+		INSERT INTO users (name, email, password, time)
 		VALUES (?, ?, ?, ?)
 	`
 
@@ -54,7 +54,7 @@ func (u *User) Save() error {
 }
 
 // validate credentials
-func (u User) ValidateCreds() error {
+func (u *User) ValidateCreds() error {
 	const query string = `SELECT id, password FROM USERS WHERE email = ?`
 	var retrievedPass string
 
