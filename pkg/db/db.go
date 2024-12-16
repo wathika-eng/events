@@ -60,7 +60,7 @@ func createTables() error {
 	location TEXT NOT NULL,
     time DATETIME NOT NULL,
     user_id INTEGER,
-	FOREIGN KEY(user_id) REFERENCES user(id)
+	FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 	);
 	`
 	// check if table exists else create it on start

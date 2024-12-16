@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 )
 
 // shape of event, required fields marked
@@ -35,7 +36,7 @@ func (e *Event) Save() error {
 	defer func(sqlstmt *sql.Stmt) {
 		err := sqlstmt.Close()
 		if err != nil {
-
+			log.Fatal(err)
 		}
 	}(sqlstmt) // Ensure the statement is closed after execution
 
