@@ -4,6 +4,7 @@ import (
 	"apiv2/pkg/config"
 	"errors"
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 )
 
 var SECRET_KEY string = config.Envs.SECRET_KEY
-var TOKEN_EXPIRATION_HOURS = time.Duration(config.Envs.EXPIRATION_TIME)
 
 // TokenBlacklist to store invalidated tokens
 var tokenBlacklist = make(map[string]bool)
@@ -19,6 +19,11 @@ var blacklistMutex = &sync.Mutex{}
 
 // GenerateToken generates a JWT token with a dynamic expiration time
 func GenerateToken(email string, userID int64) (string, error) {
+	TOKEN_EXPIRATION_HOURS, err := strconv.Atoi(config.Envs.EXPIRATION_TIME)
+	if err != nil {
+		TOKEN_EXPIRATION_HOURS = 1
+	}
+	TOKEN_EXPIRATION_HOURS = time.Duration(TOKEN_EXPIRATION_HOURS).
 	expirationTime := time.Now().Add(time.Hour * TOKEN_EXPIRATION_HOURS).Unix()
 
 	// Create token with claims
